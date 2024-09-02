@@ -56,4 +56,4 @@ Module system di JavaScript yang terbaru ada 2:
    getUser();
    ```
 
-> Lalu, jika menggunakan ES6 Module saja sudah dapat digunakan tanpa memerlukan module bandler. Apakah module bundler dapat sepenuhnya tidak digunakan? cari tahu jawabannya ➡️
+Lalu, jika menggunakan ES6 Module saja sudah dapat digunakan tanpa memerlukan module bandler. Apakah module bundler dapat sepenuhnya tidak digunakan? cari tahu jawabannya ➡️
