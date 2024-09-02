@@ -1,10 +1,9 @@
-import cekInputValid from "../utils/cekInputValid.js";
 class AlertService {
   constructor() {
     this.error = document.querySelector("#error");
   }
 
-  tampilkanErrorPenjumlahan(input, angka) {
+  tampilkanErrorPenjumlahan = (input, angka) => {
     const hasil = input.reduce((pesan, nilai, index) => {
       if (cekInputValid(angka[index])) {
         return pesan + "";
@@ -15,11 +14,7 @@ class AlertService {
 
     this.error.classList.remove("d-none");
     this.error.innerText = hasil;
-  }
+  };
 
-  sembunyikanError() {
-    this.error.classList.add("d-none");
-  }
+  sembunyikanError = () => this.error.classList.add("d-none");
 }
-
-export default new AlertService();

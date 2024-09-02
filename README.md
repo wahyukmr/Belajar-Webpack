@@ -1,6 +1,14 @@
-<h1>Module System?</h1>
+<h1>Overview</h1>
 
-Module system dapat memberikan beberapa hal berikut:
+Setup awal berisi file-file terpisah dengan fungsionalitasnya sendiri. Namun hal ini belum bisa memenuhi sistem module di JavaScript (membuat aplikasi JavaScript yang modular). Karena hanya berupa pemisahan file saja, dan di index.html masih dipanggil satu per satu secara manual.
+
+<h2>Apa itu modular?</h2>
+
+Pemisahan bagian yang utuh menjadi bagian yang terkecil yang setiap bagian nya memiliki tugasnya sendiri.
+
+<h2>Module System?</h2>
+
+Hal di atas yang mendasari **Module System** dibuat. karena dengan module system dapat memberikan beberapa hal berikut:
 
 - Reusability: module bisa digunakan kembali oleh bagian program lain tanpa harus menulis ulang atau menjadi package untuk aplikasi lain.
 - Isolation: satu module hanya mengerjakan satu hal spesifik saja.

@@ -18,5 +18,3 @@ class CalculatorService {
     this.tombolTambah.addEventListener("click", cb);
   }
 }
-
-export default new CalculatorService();

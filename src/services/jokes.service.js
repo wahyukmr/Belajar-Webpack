@@ -12,5 +12,3 @@ class JokesService {
     this.tombolJokes.addEventListener("click", cb);
   }
 }
-
-export default new JokesService();

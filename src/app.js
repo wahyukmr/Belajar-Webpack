@@ -1,5 +1,6 @@
-import cekInputValid from "../utils/cekInputValid.js";
-import parseInput from "../utils/parseInput.js";
+const alertService = new AlertService();
+const calculatorService = new CalculatorService();
+const jokesService = new JokesService();
 
 const run = (alertService, calculatorService, jokesService) => {
   alertService.sembunyikanError();
@@ -26,4 +27,4 @@ const run = (alertService, calculatorService, jokesService) => {
   });
 };
 
-export default run;
+run(alertService, calculatorService, jokesService);
