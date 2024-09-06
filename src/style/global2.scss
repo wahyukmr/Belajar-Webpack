@@ -1,0 +1,11 @@
+$bg: green;
+
+// modifikasi variabel bootstrap
+$primary: lightblue;
+$danger: salmon;
+
+@import "bootstrap/scss/bootstrap";
+
+body {
+  background-color: $bg;
+}

@@ -1,76 +1,35 @@
-<h1>Webpack Custom Configuration</h1>
+<h1>Loaders</h1>
 
-> Menjalankan perintah build ulang dilakukan hanya ketika terjadi perubahan pada file configurasi saja (di file `werbpack.config.js`).
+Loaders memungkinkan untuk melakukan bundling ke semua sumber daya statis diluar JavaScript. Dengan kata lain, memungkinkan hasil bundling tidak hanya berisi JavaScript saja dan dapat mengurangi banyak request karena semua dapat disatukan dalam file bundle. Pilihan loaders yang dapat digunakan bisa mengunjungi url berikut: [loaders](https://webpack.js.org/loaders/).
 
-<h3>Custom configuration file</h3>
+Misalnya ketika ingin membundle file css bersama dengan kode javascript sebelumnya, maka dapat dilakukan dengan cara berikut:
 
-Misalkan ketika ingin mengganti file default config dari `werbpack.config.js` menjadi `mywebpack.config.js`. Hal itu dapat dilakukan dengan:
+- install package `style-loader` dan `css-loader`.
+- Perbarui file configurasi webpack dengan menabahkan kode berikut:
 
-1. Membuat file `mywebpack.config.js`.
-2. Perbarui file `package.json`:
+  ```javascript
+  module.exports = {
+    // kode lainnya...
 
-   ```json
-   "scripts": {
-      "build": "webpack --config mywebpack.config.js"
+    module: {
+      rules: [
+        {
+          // untuk mengecek atau menguji ekstensi file yang dimasukkan
+          test: /\.css$/i,
+          // penting untuk memperhatikan urutan dan menempatkan `style-loader` di index pertama, karena webpack selalu membaca loader dari kanan ke kiri.
+          use: ["style-loader", "css-loader"],
+        },
+      ],
     },
-   ```
-
-<h3>Custom Hasil Bundle</h3>
-
-Kita dapat mengganti nama file dan atau lokasi dari hasil bundling. Caranya dapat dilakukan dengan memperbarui file `werbpack.config.js` dengan menambahkan property berikut:
-
-```javascript
-module.exports = {
-  // Kode lain...
-
-  // custom hasil bundle
-  output: {
-    path: path.resolve(__dirname, "output"),
-    filename: "bundle.js",
-  },
-};
-```
+  };
+  ```
 
 > Keterangan:
 >
-> Property `path` untuk menentukan lokasi penyimpanan file bundle. Argumen pertama yaitu `__dirname` agar relative terhadap direktori kita. argumen kedua adalah nama folder yang diinginkan.
+> `css-loader` untuk membundle file css agar masuk ke file hasil bundle-nya.
 >
-> Property `filename` untuk menentukan nama file yang diinginkan.
+> `style-loader` untuk menerapkan style-nya ke DOM.
 
-<h3>Bundle Otomatis</h3>
+<h3>Bable Loader</h3>
 
-Webpack dapat melihat perubahan pada kode dan secara otomatis melakukan bundle ulang. Hal ini dapat diterapkan dengan 2 cara berikut:
-
-1. Memperbarui file `package.json`:
-
-   ```json
-   "scripts": {
-      "build": "webpack",
-      "watch": "webpack --watch"
-    },
-   ```
-
-2. Memperbarui file `werbpack.config.js` dengan menambahkan property berikut:
-
-   ```javascript
-   module.exports = {
-     // Kode lain...
-
-     // otomatis membundle ulang jika ada perubahan
-     watch: true,
-   };
-   ```
-
-<h3>Membaca Kode Hasil Bundle</h3>
-
-Ketika ingin memudahkan dalam membaca kode hasil bundling selama di mode "development" (menghilangkan fungsi `eval()`), dapat dilakukan dengan menambahkan property berikut dalam file `werbpack.config.js`:
-
-```javascript
-module.exports = {
-  // Kode lain...
-
-  devtool: false,
-};
-```
-
-> Ketika masuk ke mode "production" property `devtool` dapat dihapus.
+Bable loader digunakan agar hasil file bundler bisa di support oleh browser versi lama.
