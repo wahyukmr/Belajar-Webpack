@@ -5,11 +5,20 @@ const { merge } = require("webpack-merge");
 
 module.exports = merge(config, {
   mode: "development",
+  devServer: {
+    // mengecek file mana saja yang mau di lacak
+    static: {
+      directory: path.join(__dirname, "src"),
+    },
+    compress: true,
+    port: 3000,
+    liveReload: true,
+  },
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "main.js",
+    assetModuleFilename: "img/[name][ext]",
     clean: true,
   },
   plugins: [new MiniCssExtractPlugin()],
-  watch: true,
 });
