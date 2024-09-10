@@ -11,11 +11,12 @@ module.exports = {
       import: "./src/index02.js",
       dependOn: "shared",
     },
-    vendor: "./src/vendor.js",
     shared: "lodash",
   },
   optimization: {
-    runtimeChunk: "single",
+    splitChunks: {
+      chunks: "all",
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({

@@ -1,77 +1,59 @@
-<h1>Code Splitting</h1>
+# Code Splitting
 
-_Code Splitting_ adalah teknik untuk memecah bundel kode menjadi bagian-bagian yang lebih kecil, sehingga kode hanya dimuat saat dibutuhkan, meningkatkan performa aplikasi. Webpack mendukung tiga pendekatan umum untuk pemisahan kode yang tersedia: **entry point**, **dynamic import**, dan **Prevent Duplication**. Berikut adalah penjelasannya:
+_Code Splitting_ adalah teknik untuk membagi kode aplikasi menjadi beberapa bundel yang dapat dimuat secara dinamis. Teknik ini memungkinkan aplikasi untuk memuat hanya kode yang diperlukan untuk saat itu, yang mengurangi waktu pemuatan halaman dan meningkatkan kinerja secara keseluruhan. Webpack mendukung tiga pendekatan umum untuk pemisahan kode yang tersedia: **entry point**, **dynamic import**, dan **Prevent Duplication**. Berikut adalah penjelasannya:
 
-- Entry Point Splitting
+## Entry Point Splitting
 
-  Webpack memungkinkan pemisahan kode dengan menggunakan beberapa entry points. Ini berarti kita dapat membuat bundel terpisah untuk setiap entry point yang dikonfigurasi.
+Webpack memungkinkan pemisahan kode dengan menggunakan beberapa entry points. Ini berarti kita dapat membuat bundel terpisah untuk setiap entry point yang dikonfigurasi.
 
-  Namun cara ini lebih manual dan memiliki beberapa kendala, yaitu: Jika ada modul yang diduplikasi di antara potongan-potongan entri, modul-modul tersebut akan disertakan di dalam kedua bundel tersebut. Hal ini tidak fleksibel dan tidak dapat digunakan untuk membagi kode secara dinamis dengan logika aplikasi inti.
+Namun cara ini lebih manual dan memiliki beberapa kendala, yaitu: Jika ada modul yang diduplikasi di antara potongan-potongan entri, modul-modul tersebut akan disertakan di dalam kedua bundel tersebut. Hal ini tidak fleksibel dan tidak dapat digunakan untuk membagi kode secara dinamis dengan logika aplikasi inti.
 
-  Contoh Konfigurasi:
+Contoh Konfigurasi:
 
-  ```javascript
-  module.exports = {
-    entry: {
-      app: "./src/app.js",
-      vendor: "./src/vendor.js",
-    },
-    output: {
-      filename: "[name].bundle.js",
-      path: __dirname + "/dist",
-    },
-  };
-  ```
+```javascript
+module.exports = {
+  entry: {
+    app: "./src/app.js",
+    vendor: "./src/vendor.js",
+  },
+  output: {
+    filename: "[name].bundle.js",
+    path: __dirname + "/dist",
+  },
+};
+```
 
-  Pada konfigurasi ini, Webpack menghasilkan dua bundel terpisah, `app.bundle.js` dan `vendor.bundle.js`, berdasarkan entry point yang terdefinisi.
+Pada konfigurasi ini, Webpack menghasilkan dua bundel terpisah, `app.bundle.js` dan `vendor.bundle.js`, berdasarkan entry point yang terdefinisi.
 
-- Prevent Duplication
+## Prevent Duplication
 
-  Jika mempunyai multiple entries dan setiap file JavaScript yang menjadi entry terhubung ke sebuah library yang sama, hal ini akan membuat setiap file JS tersebut akan memiliki duplikasi kode library yang digunakan.
+Jika mempunyai multiple entries dan setiap file JavaScript yang menjadi entry terhubung ke sebuah library yang sama, hal ini akan membuat setiap file JS tersebut akan memiliki duplikasi kode library yang digunakan.
 
-  Webpack menyediakan `SplitChunksPlugin`, `SplitChunksPlugin` adalah fitur Webpack yang memungkinkan untuk mengekstrak dependencies yang umum/sama ke entry chunk (memecah/membagi kode menjadi beberapa file kecil) yang ada atau potongan yang baru. Tujuannya adalah agar browser tidak perlu memuat semua kode dalam satu bundel besar sekaligus. Ini membuat halaman bisa dimuat lebih cepat karena hanya bagian yang dibutuhkan saja yang diambil oleh browser.
+Penggunaan _SplitChunksPlugin_ dan pengaturan _entry dependencies_ pada Webpack untuk mencegah duplikasi bukanlah dua pilihan yang saling eksklusif, tetapi sering kali diterapkan bersamaan. Kedua konsep tersebut bekerja dalam tujuan yang sama: mengoptimalkan bundling dan mencegah duplikasi dependensi di proyek, namun dengan pendekatan yang berbeda.
 
-  Bayangkan kamu punya satu file besar yang berisi semua kode aplikasi. Saat pengguna membuka aplikasi, browser harus memuat seluruh file, meskipun banyak kode di dalamnya mungkin tidak dibutuhkan saat itu. Dengan `SplitChunksPlugin`, kode yang jarang digunakan atau library besar bisa dipisahkan menjadi file yang lebih kecil. File ini hanya akan dimuat saat benar-benar dibutuhkan.
+Penjelasan Masing-Masing Konsep:
 
-  Fitur ini bekerja dengan aturan-aturan tertentu yang bisa kamu sesuaikan. Misalnya:
+### SplitChunksPlugin:
 
-  - [ ] Memisahkan library dari `node_modules`: Kode yang berasal dari `node_modules` seperti React atau lodash sering kali besar, jadi Webpack bisa memisahkannya ke dalam file `vendors.js`.
-  - [ ] Memisahkan file berdasarkan ukuran: Jika ada file yang terlalu besar, Webpack akan memecahnya menjadi beberapa bagian.
+**Fungsi Utama**: Digunakan untuk membagi kode menjadi beberapa bundle terpisah secara otomatis, dengan memecah dependencies yang dipakai secara umum antara beberapa entry points (seperti kode dari node_modules yang dipakai di berbagai modul).
 
-  Contoh:
+**Cara Kerja**: Plugin ini akan menganalisis setiap entry point dan memeriksa apakah ada dependensi yang sama digunakan di lebih dari satu bundle. Dependensi yang sama kemudian akan dikeluarkan menjadi chunk terpisah yang dapat digunakan bersama oleh beberapa entry points.
 
-  Misalnya kamu punya aplikasi yang menggunakan library seperti react, dan kamu juga punya kode khusus aplikasi sendiri. Dengan `SplitChunksPlugin`, Webpack bisa membuat dua file:
+**Contoh**: Jika ada dua entry point menggunakan library besar seperti lodash, plugin ini akan memisahkan lodash ke dalam bundle tersendiri sehingga tidak di-bundle ulang di kedua entry points, melainkan dipakai dari satu bundle terpisah.
 
-  - [ ] `vendors.js `(berisi kode dari node_modules seperti react).
-  - [ ] `main.js` (berisi kode aplikasi kamu sendiri).
+### Entry Dependencies:
 
-  Jadi ketika aplikasi dijalankan, browser akan memuat `vendors.js` sekali, dan akan menggunakan cache sehingga tidak perlu memuatnya lagi di masa mendatang.
+**Fungsi Utama**: Menentukan dengan tepat apa yang masuk ke dalam bundling dari setiap entry point di aplikasi.
 
-  Contoh Konfigurasi SplitChunks:
+**Cara Kerja**: Kamu bisa secara manual menentukan dependency sharing dengan menggunakan entry dependencies atau entry points yang saling bergantung. Ini memastikan bahwa dependencies yang umum di beberapa entry points tidak di-bundle lebih dari sekali.
 
-  ```javascript
-  module.exports = {
-    optimization: {
-      splitChunks: {
-        chunks: "all", // Ini memberitahu Webpack untuk memecah semua jenis kode
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/, // Pisahkan kode dari node_modules
-            name: "vendors", // Nama untuk file yang dipisahkan
-            chunks: "all",
-          },
-        },
-      },
-    },
-  };
-  ```
+**Contoh**: Kamu bisa menentukan entry points secara manual di webpack.config.js untuk setiap bagian dari aplikasi yang berbeda (misalnya, halaman yang berbeda) dan menentukan bahwa beberapa entry points harus berbagi dependencies seperti library vendor.
 
-  Penjelasan:
+Kedua pendekatan ini sering kali digunakan bersamaan untuk mendapatkan keseimbangan antara kemudahan otomatisasi dan kontrol manual dalam mencegah duplikasi kode. Menggunakan keduanya memungkinkan kamu untuk meminimalkan ukuran bundle secara efektif dan memastikan performa aplikasi tetap optimal.
 
-  `chunks: 'all'`: Memecah kode dari semua jenis sumber (baik kode yang kita tulis sendiri atau library).
+Contoh Kasus Penggunaan Bersama:
 
-  `cacheGroups`: Aturan khusus untuk memisahkan grup kode tertentu.
-
-  `test`: Regex untuk mendeteksi file mana yang akan dipisah. Dalam contoh ini, semua yang ada di `node_modules` akan dipisah.
-
-  `name`: Nama untuk file yang dipisahkan, seperti `vendors.js`.
+- Kamu memiliki beberapa halaman di aplikasi (misalnya, `home.js`, `about.js`, dan `contact.js`).
+- Semua halaman menggunakan dependensi umum seperti React dan Axios.
+- Kamu dapat menggunakan _SplitChunksPlugin_ untuk secara otomatis memisahkan dependensi seperti React ke dalam chunk terpisah.
+- Sementara itu, dengan _entry dependencies_, kamu bisa memutuskan bahwa Axios hanya dimuat pada halaman tertentu jika tidak diperlukan di halaman lain.
